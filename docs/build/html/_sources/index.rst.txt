@@ -9,4 +9,6 @@ Welcome to TorchDiffEqPack's documentation!
 .. toctree::
    :maxdepth: 2
 
-   modules <modules.rst>
+   Installation
+   How to use <TorchDiffEqPack.rst>
+   Examples <Examples.rst>

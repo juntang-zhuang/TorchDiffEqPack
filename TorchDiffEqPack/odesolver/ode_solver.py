@@ -10,24 +10,24 @@ from .base import check_arguments
 __all__ = ['odesolve']
 
 def odesolve(func, y0, options, return_solver=False, **kwargs):
-    """
+    r"""
     Implementation of ICML 2020 paper "Adaptive checkpoint adjoint method for accurate gradient esitmation in Neural ODEs"
 
     How to use:
     
-    from TorchDiffEqPack import odesolve_adjoint \n
-    options = {} \n
-    options.update({'method':method}) # string, method must be in ['euler','rk2','rk12','rk23','dopri5', 'ode23s'], 'ode23s' for stiff ODEs \n
-    options.update({'h': h}) # float, initial stepsize for integration. Must be specified for fixed stepsize solvers; for adaptive solvers, can be set as None, then the solver witll automatically determine the initial stepsize \n
-    options.update({'t0': t0}) # float, initial time for integration \n
-    options.update({'t1': t1}) # float, end time for integration \n
-    options.update({'rtol': rtol}) # float or list of floats (must be same length as y0), relative tolerance for integration, typically set as 1e-5 or 1e-6 for dopri5 \n
-    options.update({'atol': atol}) # float or list of floats (must be same length as y0), absolute tolerance for integration, typically set as 1e-6 or 1e-7 for dopri5 \n
-    options.update({'print_neval': print_neval}) # bool, when print number of function evaluations, recommended to set as False \n
-    options.update({'neval_max': neval_max}) # int, maximum number of evaluations when encountering stiff problems, typically set as 5e5 \n
-    options.update({'t_eval': [t0, t0 + (t1-t0)/10, ...  ,t1]}) # Evaluation time points, a list of float; if is None, only output the value at time t1 \n
+    * from TorchDiffEqPack import odesolve
+    * options = {} 
+    * options.update({'method':method}) : string, 'method' must be in ['euler','rk2','rk12','rk23','dopri5', 'ode23s'], 'ode23s' for stiff ODEs 
+    * options.update({'h': h}) : float, initial stepsize for integration. Must be specified for fixed stepsize solvers; for adaptive solvers, can be set as None, then the solver witll automatically determine the initial stepsize 
+    * options.update({'t0': t0}) : float, initial time for integration 
+    * options.update({'t1': t1}) : float, end time for integration 
+    * options.update({'rtol': rtol}) : float or list of floats (must be same length as y0), relative tolerance for integration, typically set as 1e-5 or 1e-6 for dopri5 
+    * options.update({'atol': atol}) : float or list of floats (must be same length as y0), absolute tolerance for integration, typically set as 1e-6 or 1e-7 for dopri5 
+    * options.update({'print_neval': print_neval}) : bool, when print number of function evaluations, recommended to set as False 
+    * options.update({'neval_max': neval_max}) : int, maximum number of evaluations when encountering stiff problems, typically set as 5e5 
+    * options.update({'t_eval': [t0, t0 + (t1-t0)/10, ...  ,t1]}) : Evaluation time points, a list of float; if is None, only output the value at time t1 
 
-    out = odesolve(func, y0, options = options) # func is the ODE; y0 is the initial condition, could be either a tensor or a tuple of tensors \n
+    * out = odesolve(func, y0, options = options) : func is the ODE; y0 is the initial condition, could be either a tensor or a tuple of tensors
     """
     hyperparams = extract_keys(options)
 

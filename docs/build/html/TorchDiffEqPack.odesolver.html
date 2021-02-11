@@ -41,18 +41,20 @@
 <code class="sig-prename descclassname">TorchDiffEqPack.odesolver.ode_solver.</code><code class="sig-name descname">odesolve</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">y0</em>, <em class="sig-param">options</em>, <em class="sig-param">return_solver=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TorchDiffEqPack.odesolver.ode_solver.odesolve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implementation of ICML 2020 paper “Adaptive checkpoint adjoint method for accurate gradient esitmation in Neural ODEs”</p>
 <p>How to use:</p>
-<p>from TorchDiffEqPack import odesolve_adjoint</p>
-<p>options = {}</p>
-<p>options.update({‘method’:method}) # string, method must be in [‘euler’,’rk2’,’rk12’,’rk23’,’dopri5’, ‘ode23s’], ‘ode23s’ for stiff ODEs</p>
-<p>options.update({‘h’: h}) # float, initial stepsize for integration. Must be specified for fixed stepsize solvers; for adaptive solvers, can be set as None, then the solver witll automatically determine the initial stepsize</p>
-<p>options.update({‘t0’: t0}) # float, initial time for integration</p>
-<p>options.update({‘t1’: t1}) # float, end time for integration</p>
-<p>options.update({‘rtol’: rtol}) # float or list of floats (must be same length as y0), relative tolerance for integration, typically set as 1e-5 or 1e-6 for dopri5</p>
-<p>options.update({‘atol’: atol}) # float or list of floats (must be same length as y0), absolute tolerance for integration, typically set as 1e-6 or 1e-7 for dopri5</p>
-<p>options.update({‘print_neval’: print_neval}) # bool, when print number of function evaluations, recommended to set as False</p>
-<p>options.update({‘neval_max’: neval_max}) # int, maximum number of evaluations when encountering stiff problems, typically set as 5e5</p>
-<p>options.update({‘t_eval’: [t0, t0 + (t1-t0)/10, …  ,t1]}) # Evaluation time points, a list of float; if is None, only output the value at time t1</p>
-<p>out = odesolve(func, y0, options = options) # func is the ODE; y0 is the initial condition, could be either a tensor or a tuple of tensors</p>
+<ul class="simple">
+<li><p>from TorchDiffEqPack import odesolve</p></li>
+<li><p>options = {}</p></li>
+<li><p>options.update({‘method’:method}) : string, ‘method’ must be in [‘euler’,’rk2’,’rk12’,’rk23’,’dopri5’, ‘ode23s’], ‘ode23s’ for stiff ODEs</p></li>
+<li><p>options.update({‘h’: h}) : float, initial stepsize for integration. Must be specified for fixed stepsize solvers; for adaptive solvers, can be set as None, then the solver witll automatically determine the initial stepsize</p></li>
+<li><p>options.update({‘t0’: t0}) : float, initial time for integration</p></li>
+<li><p>options.update({‘t1’: t1}) : float, end time for integration</p></li>
+<li><p>options.update({‘rtol’: rtol}) : float or list of floats (must be same length as y0), relative tolerance for integration, typically set as 1e-5 or 1e-6 for dopri5</p></li>
+<li><p>options.update({‘atol’: atol}) : float or list of floats (must be same length as y0), absolute tolerance for integration, typically set as 1e-6 or 1e-7 for dopri5</p></li>
+<li><p>options.update({‘print_neval’: print_neval}) : bool, when print number of function evaluations, recommended to set as False</p></li>
+<li><p>options.update({‘neval_max’: neval_max}) : int, maximum number of evaluations when encountering stiff problems, typically set as 5e5</p></li>
+<li><p>options.update({‘t_eval’: [t0, t0 + (t1-t0)/10, …  ,t1]}) : Evaluation time points, a list of float; if is None, only output the value at time t1</p></li>
+<li><p>out = odesolve(func, y0, options = options) : func is the ODE; y0 is the initial condition, could be either a tensor or a tuple of tensors</p></li>
+</ul>
 </dd></dl>
 
 </div>
@@ -76,21 +78,22 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">modules</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="TorchDiffEqPack.html">TorchDiffEqPack package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="TorchDiffEqPack.html">How to use</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TorchDiffEqPack.odesolver package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TorchDiffEqPack.odesolver_mem.html">TorchDiffEqPack.odesolver_mem package</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">TorchDiffEqPack</a><ul>
   <li><a href="TorchDiffEqPack.html">TorchDiffEqPack package</a><ul>
       <li>Previous: <a href="TorchDiffEqPack.html" title="previous chapter">TorchDiffEqPack package</a></li>
       <li>Next: <a href="TorchDiffEqPack.odesolver_mem.html" title="next chapter">TorchDiffEqPack.odesolver_mem package</a></li>
-  </ul></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -121,7 +124,7 @@
       &copy;2021, Juntang Zhuang.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -12,7 +12,8 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('/home/juntang/Downloads/torch_diffeq_pack_doc/'))
+sys.path.insert(0, os.path.abspath('../../../TorchDiffEqPack'))
+sys.path.insert(0, os.path.abspath('../../../test_code'))
 
 devdir='/home/juntang/Downloads/torch_diffeq_pack_doc/TorchDiffEqPack'
 
