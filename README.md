@@ -1,4 +1,4 @@
-PyTorch implementation of ACA and MALI. Please see https://jzkay12.github.io/TorchDiffEqPack/ for detailed documentation.
+PyTorch implementation of ACA and MALI, a reverse accurate and memory efficient solver for Neural ODEs, achieving new SOTA results on image classification, continuous generative modeling, and time-series analysis with Neural ODEs. Please see https://jzkay12.github.io/TorchDiffEqPack/ for detailed documentation and APIs.
 
 If you find this package helpful, please cite our paper:
 ```
