@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Installation &#8212; TorchDiffEqPack 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TorchDiffEqPack package" href="TorchDiffEqPack.html" />
+    <link rel="prev" title="Welcome to TorchDiffEqPack’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<pre><code>pip install TorchDiffEqPack</code></pre>
+<pre><code> github: https://github.com/juntang-zhuang/TorchDiffEqPack </code></pre>
+<p> This package has incompatibility with PyTorch 1.7. <code>del variable; torch.cuda.empty_cache()</code> seems to not free GPU memory in PyTorch 1.7, 
+  but works fine with PyTorch <= 1.6.</p>
+
+<p> Please cite our paper if you find this package useful. </p>
+<pre> <code> 
+@inproceedings{
+zhuang2021mali,
+title={{\{}MALI{\}}: A memory efficient and reverse accurate integrator for Neural {\{}ODE{\}}s},
+author={Juntang Zhuang and Nicha C Dvornek and sekhar tatikonda and James s Duncan},
+booktitle={International Conference on Learning Representations},
+year={2021},
+url={https://openreview.net/forum?id=blfSjHeFM_e}
+} 
+
+@inproceedings{zhuang2020adaptive,
+  title={Adaptive checkpoint adjoint method for gradient estimation in neural ODE},
+  author={Zhuang, Juntang and Dvornek, Nicha and Li, Xiaoxiao and Tatikonda, Sekhar and Papademetris, Xenophon and Duncan, James},
+  booktitle={International Conference on Machine Learning},
+  pages={11639--11649},
+  year={2020},
+  organization={PMLR}
+}
+
+</code> </pre>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TorchDiffEqPack</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TorchDiffEqPack.html">How to use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to TorchDiffEqPack’s documentation!</a></li>
+      <li>Next: <a href="TorchDiffEqPack.html" title="next chapter">TorchDiffEqPack package</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Juntang Zhuang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Installation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

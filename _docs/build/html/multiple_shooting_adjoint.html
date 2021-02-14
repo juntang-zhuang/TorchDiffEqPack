@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>multiple_shooting_adjoint package &#8212; TorchDiffEqPAck 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="test_stiff module" href="test_stiff.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="multiple-shooting-adjoint-package">
+<h1>multiple_shooting_adjoint package<a class="headerlink" href="#multiple-shooting-adjoint-package" title="Permalink to this headline">¶</a></h1>
+<p>See <a class="reference external" href="https://github.com/juntang-zhuang/TorchDiffEqPack/blob/master/test_code/multiple_shooting_adjoint">https://github.com/juntang-zhuang/TorchDiffEqPack/blob/master/test_code/multiple_shooting_adjoint</a></p>
+<p> Define the MultipleShoot class </p>
+<pre> <code> 
+  import torch
+import math
+import numpy as np
+from TorchDiffEqPack import odesolve
+from torch import nn
+
+class MultipleShoot(nn.Module):
+
+    def __init__(self, ode_func, chunk_length = 10, observation_length = 100, ODE_options = None,
+                 smooth_penalty = 1.0, time_interval = 1.0):
+        super(MultipleShoot, self).__init__()
+        """
+        :param ode_func: The ODE functions, dy/dt = func(t,y)
+        :param chunk_length: the observation is divided into chunks, each of of length chunk_length
+        :observation_length: total length of observation (This determines how many inter-mediate initial values
+         need to specified as extra parameters to update)
+        :ODE_options: options for ODE solvers
+        :smooth_penalty: penalty for smoothness
+        """
+        self.odefunc = ode_func
+        self.chunk_length = chunk_length
+        self.observation_length = observation_length
+        self.ODE_options = ODE_options
+        self.smooth_penalty = smooth_penalty
+        self.time_interval = time_interval
+
+    def prepare_intermediate(self, observations):
+        # observations of shape  num_time_points x N, N is the dimension of hidden state y
+        observation_length = int( observations.shape[0] )
+        self.observation_length = observation_length
+
+        # calculate the number of chunks
+        self.num_chunks = math.ceil( float(observation_length) / float(self.chunk_length) )
+
+        # create a list of intermedia results
+        self.intermediates = nn.ParameterList()
+        for i in range(self.num_chunks):
+            self.intermediates.append( nn.Parameter(
+                observations[i*self.chunk_length, :], requires_grad=True
+                )
+            )
+
+    def fit_and_grad(self, observations, time_points): # calculate grad w.r.t parameters
+        assert isinstance(time_points, list), "time_points must be of type list"
+        # check number of time points match observation
+        assert self.observation_length == len(time_points), "Number of time points mismatch observation"
+
+        # create observation into chunks
+        data_chunks, time_chunks = [], []
+        for i in range(self.num_chunks):
+            data_chunks.append(
+                observations[ i*self.chunk_length : min( (i+1) * self.chunk_length+1, self.observation_length), :]
+            )
+            time_chunks.append(
+                time_points[ i * self.chunk_length : min( (i+1) * self.chunk_length+1, self.observation_length)]
+            )
+
+        # fit data chunk by chunk
+        prediction_chunks = []
+        for i in range(self.num_chunks):
+            data_chunk, time_chunk, intermediate = data_chunks[i], time_chunks[i], self.intermediates[i]
+
+            self.ODE_options.update({'t0': time_chunk[0]})
+            self.ODE_options.update({'t1': time_chunk[-1]})
+            self.ODE_options.update({'t_eval': time_chunk})
+
+            result = odesolve(self.odefunc, y0 = intermediate, options=self.ODE_options)
+            prediction_chunks.append(result)
+
+        return prediction_chunks, data_chunks
+
+    def get_loss(self, prediction_chunks, data_chunks):
+        assert len(prediction_chunks)==len(data_chunks), "Length of data_chunks and prediction_chunks must match"
+
+        # loss between prediction and observation
+        observation_loss = 0.0
+        for data, prediction in zip(data_chunks, prediction_chunks):
+            observation_loss = observation_loss + torch.mean((data - prediction)**2)
+
+        # loss in mis-match between prediction and inter-mediate parameters
+        mismatch_loss = 0.0
+        for i in range(self.num_chunks-1):
+            prev, next = prediction_chunks[i][-1,:], self.intermediates[i+1]
+            mismatch_loss = mismatch_loss + torch.mean((prev - next)**2)
+
+        loss = observation_loss + mismatch_loss * self.smooth_penalty
+
+        print('Observation loss: {}, smoothness loss {}'.format( observation_loss.item(), mismatch_loss.item() ))
+
+        return loss
+</code>
+</pre>
+<p> Examples with a linear dynamical system, see <a class="reference external" href="https://github.com/juntang-zhuang/TorchDiffEqPack/blob/master/test_code/multiple_shooting_adjoint/test_multiple_shoot.py">https://github.com/juntang-zhuang/TorchDiffEqPack/blob/master/test_code/multiple_shooting_adjoint/test_multiple_shoot.py</a> </p>
+<p> Examples with Lotka-Voltera equation, see <a class="reference external" href="https://github.com/juntang-zhuang/TorchDiffEqPack/blob/master/test_code/multiple_shooting_adjoint/test_multiple_lotka.py">https://github.com/juntang-zhuang/TorchDiffEqPack/blob/master/test_code/multiple_shooting_adjoint/test_multiple_shoot_lotka.py</a> </p>
+<p> Examples with nonlinear Lotka-Voltera equation, see <a class="reference external" href="https://github.com/juntang-zhuang/TorchDiffEqPack/blob/master/test_code/multiple_shooting_adjoint/test_multiple_lotka_sigmoid.py">https://github.com/juntang-zhuang/TorchDiffEqPack/blob/master/test_code/multiple_shooting_adjoint/test_multiple_lotka_sigmoid.py</a> </p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TorchDiffEqPAck</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TorchDiffEqPack.html">How to use</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="Examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="three_body_problem.html">Three-body problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="three_body_problem_dense.html">Three-body problem2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_tuple_time_grad.html">Test grad w.r.t integration time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_symplectic.html">Symplectic system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_stiff.html">StiffODE</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Multiple Shooting Adjoint</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="Examples.html">Examples</a><ul>
+      <li>Previous: <a href="test_stiff.html" title="previous chapter">test_stiff module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Juntang Zhuang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/multiple_shooting_adjoint.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

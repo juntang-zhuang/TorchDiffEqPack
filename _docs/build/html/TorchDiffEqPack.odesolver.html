@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>TorchDiffEqPack.odesolver package &#8212; TorchDiffEqPack 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TorchDiffEqPack.odesolver_mem package" href="TorchDiffEqPack.odesolver_mem.html" />
+    <link rel="prev" title="TorchDiffEqPack package" href="TorchDiffEqPack.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="torchdiffeqpack-odesolver-package">
+<h1>TorchDiffEqPack.odesolver package<a class="headerlink" href="#torchdiffeqpack-odesolver-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-TorchDiffEqPack.odesolver.ode_solver">
+<span id="torchdiffeqpack-odesolver-ode-solver-module"></span><h2>TorchDiffEqPack.odesolver.ode_solver module<a class="headerlink" href="#module-TorchDiffEqPack.odesolver.ode_solver" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="TorchDiffEqPack.odesolver.ode_solver.odesolve">
+<code class="sig-prename descclassname">TorchDiffEqPack.odesolver.ode_solver.</code><code class="sig-name descname">odesolve</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">y0</em>, <em class="sig-param">options</em>, <em class="sig-param">return_solver=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TorchDiffEqPack.odesolver.ode_solver.odesolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of ICML 2020 paper “Adaptive checkpoint adjoint method for accurate gradient esitmation in Neural ODEs”</p>
+
+<p> General differentiable ODE solvers without too much memory consideration. Compared with the "odeint" in "torchdiffeq" package, "odesolve" deletes
+ the adjustment of stepsize from back-propagation computation graph, instead it records all accepted steps. </p>
+
+<p> Limitations: the memory cost is still increasing with integration time. Please use "odesolve_adjoint" or "odesolve_adjoint_sym12" to save memory</p>
+  
+  
+<p>How to use:</p>
+
+<pre><code>
+# configure training options
+options = {}
+options.update({'method': 'Dopri5'})
+options.update({'h': None})
+options.update({'t0': 0.0})
+options.update({'t1': 1.0})
+options.update({'rtol': 1e-7})
+options.update({'atol': 1e-8})
+options.update({'print_neval': False})
+options.update({'neval_max': 1000000})
+options.update({'safety': None})
+options.update({'t_eval':t_list})
+options.update({'interpolation_method':'cubic'})
+options.update({'regenerate_graph':False})
+out = odesolve(func, y0, options = options) 
+</code></pre>
+
+<ul class="simple">
+<li><p>'method': string, must be in [‘euler’,’rk2’,'rk4',’rk12’,’rk23’,’dopri5’, ‘ode23s’,'sym12async','fixedstep_sym12async'], ‘ode23s’ for stiff ODEs; fixed stepsize 
+  solvers include 'euler, rk2, rk4, fixedstep_asym12async', adaptive stepsize solvers include 'rk12, rk23, dopri5'.</p></li>
+<li><p>'h': float, initial stepsize for integration. Must be specified for fixed stepsize solvers; for adaptive solvers, can be set as None, then the solver witll automatically determine the initial stepsize</p></li>
+<li><p>'t0' : float, initial time for integration</p></li>
+<li><p>'t1': float, end time for integration</p></li>
+<li><p>'rtol': float or list of floats (must be same length as y0), relative tolerance for integration, typically set as 1e-5 or 1e-6 for dopri5</p></li>
+<li><p>'atol': float or list of floats (must be same length as y0), absolute tolerance for integration, typically set as 1e-6 or 1e-7 for dopri5</p></li>
+<li><p>'print_neval': bool, when print number of function evaluations, recommended to set as False</p></li>
+<li><p>'neval_max' : int, maximum number of evaluations when encountering stiff problems, typically set as 5e5</p></li>
+<li><p>'t_eval': Evaluation time points, a list of float; if is None, only output the value at time t1</p></li>
+<li><p>out = odesolve(func, y0, options = options) : func is the ODE; y0 is the initial condition, could be either a tensor or a tuple of tensors</p></li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TorchDiffEqPack</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="TorchDiffEqPack.html">How to use</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TorchDiffEqPack.odesolver package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TorchDiffEqPack.odesolver_mem.html">TorchDiffEqPack.odesolver_mem package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="TorchDiffEqPack.html">TorchDiffEqPack package</a><ul>
+      <li>Previous: <a href="TorchDiffEqPack.html" title="previous chapter">TorchDiffEqPack package</a></li>
+      <li>Next: <a href="TorchDiffEqPack.odesolver_mem.html" title="next chapter">TorchDiffEqPack.odesolver_mem package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Juntang Zhuang.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/TorchDiffEqPack.odesolver.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
