@@ -179,6 +179,8 @@ class Checkpointing_Adjoint(torch.autograd.Function):
             dLdt1.to(t1.device)
         out = tuple([*grad_output] + [None, grad_t0, dLdt1, grad_flat_param,None])
 
+        del  state0, ctx.state0, ans, ctx.ans, ctx.z0
+
         return out
 
 
