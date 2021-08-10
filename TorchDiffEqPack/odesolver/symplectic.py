@@ -17,7 +17,7 @@ def sym12async_forward(func, t, dt, y, adaptive = False):
     out = tuple(list(y2) + list(v1))
 
     if adaptive:
-        error = tuple(_v1 * dt / 2.0 - _v0 * dt / 2.0 for _v1, _v0 in zip(vt1, v0))
+        error = tuple(_v1 * dt - _v0 * dt for _v1, _v0 in zip(vt1, v0))
         return out, error, [vt1, y1]
     else:
         return out, None, [v1, y1]
